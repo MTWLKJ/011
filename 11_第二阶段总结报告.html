@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motu Scenery – ZPMS 第二阶段总结报告</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#111c33; --panel2:#0b1526; --line:#22304d;
+    --text:#e6edf6; --muted:#9fb0c9; --accent:#38bdf8; --accent2:#22c55e;
+    --warn:#f59e0b; --bad:#ef4444; --chip:#1e293b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:linear-gradient(180deg,#0b1220 0%,#0f172a 40%,#0b1220 100%);
+    color:var(--text); font-family:"Segoe UI","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+    line-height:1.75; font-size:15px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+  header.hero{
+    background:radial-gradient(1200px 400px at 10% -10%,rgba(56,189,248,.18),transparent 60%),
+               radial-gradient(900px 400px at 100% 0%,rgba(34,197,94,.14),transparent 55%),
+               var(--panel);
+    border:1px solid var(--line); border-radius:18px; padding:34px 34px 26px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);
+  }
+  .brand{display:flex;align-items:center;gap:12px;color:var(--accent);font-weight:700;letter-spacing:.5px;font-size:13px}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px var(--accent2)}
+  h1{font-size:30px;line-height:1.35;margin:10px 0 6px;font-weight:800}
+  h1 .thin{color:var(--muted);font-weight:500}
+  .sub{color:var(--muted);font-size:14px}
+  .badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .badge{background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:12.5px;color:var(--text)}
+  .badge.ok{border-color:rgba(34,197,94,.55);color:#86efac}
+  .badge.warn{border-color:rgba(245,158,11,.55);color:#fcd34d}
+  .badge.info{border-color:rgba(56,189,248,.55);color:#7dd3fc}
+  nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0}
+  nav.toc a{color:var(--muted);text-decoration:none;font-size:12.5px;padding:4px 10px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.02)}
+  nav.toc a:hover{color:var(--accent);border-color:var(--accent)}
+  main{margin-top:26px}
+  section{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:24px 26px;margin:18px 0;box-shadow:0 10px 26px rgba(0,0,0,.22)
+  }
+  section h2{font-size:19px;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  section h2 .n{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:rgba(56,189,248,.15);color:var(--accent);font-size:13px;border:1px solid rgba(56,189,248,.35)}
+  h3{font-size:15px;margin:20px 0 8px;color:#cfe3ff}
+  p{margin:8px 0}
+  .muted{color:var(--muted)}
+  .small{font-size:12.5px}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.2px}
+  th,td{border:1px solid var(--line);padding:9px 10px;vertical-align:top;text-align:left}
+  th{background:rgba(56,189,248,.08);color:#cfe8ff;font-weight:600;white-space:nowrap}
+  tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+  .tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;margin-right:4px;white-space:nowrap}
+  .tag.ok{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.4)}
+  .tag.warn{background:rgba(245,158,11,.13);color:#fcd34d;border:1px solid rgba(245,158,11,.4)}
+  .tag.bad{background:rgba(239,68,68,.13);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+  .tag.ref{background:rgba(56,189,248,.13);color:#7dd3fc;border:1px solid rgba(56,189,248,.4)}
+  ul{margin:8px 0 8px 22px;padding:0}
+  li{margin:4px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:14px 0}
+  .card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card .k{color:var(--muted);font-size:12px}
+  .card .v{font-size:16px;font-weight:700;margin-top:4px}
+  .card .v.ok{color:#86efac}
+  .card .v.warn{color:#fcd34d}
+  .card .v.bad{color:#fca5a5}
+  .callout{border-left:3px solid var(--accent);background:rgba(56,189,248,.07);padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0}
+  .callout.warn{border-left-color:var(--warn);background:rgba(245,158,11,.08)}
+  .callout.bad{border-left-color:var(--bad);background:rgba(239,68,68,.08)}
+  .files a{color:#93c5fd;text-decoration:none}
+  .files a:hover{text-decoration:underline}
+  code{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12.5px;color:#bfe3ff}
+  footer{color:var(--muted);text-align:center;font-size:12px;margin-top:26px;line-height:1.9}
+  @media print{
+    body{background:#fff;color:#111}
+    header.hero,section{background:#fff;border-color:#ddd;box-shadow:none}
+    .badge,.tag,nav.toc a{background:#f5f5f5;color:#222;border-color:#ccc}
+    th{background:#f0f0f0;color:#111}
+    a{color:#0645ad}
+    code{background:#f3f3f3;color:#111;border-color:#ddd}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="brand"><span class="dot"></span> MOTU GAME TECH · MOTU SCENERY</div>
+  <h1>德宏芒市国际机场（ZPMS）<br><span class="thin">MSFS 2020 专业级重建 · 第二阶段总结报告</span></h1>
+  <div class="sub">项目名称：Motu Scenery – ZPMS Dehong Mangshi International Airport　|　开发平台：MSFS 2020（Steam 1.39.12.0）　|　完成日期：2026-11-26 21:35（Asia/Shanghai）</div>
+  <div class="badges">
+    <span class="badge ok">阶段状态：完成（暂停等验收）</span>
+    <span class="badge ok">完成度约 85%</span>
+    <span class="badge info">数据基线：AIRAC 2612</span>
+    <span class="badge warn">P0 待 eAIP：7 项</span>
+    <span class="badge info">工具链编译测试：通过</span>
+    <span class="badge info">报告版本：v1.0</span>
+  </div>
+  <nav class="toc">
+    <a href="#overview">阶段概览</a>
+    <a href="#tasks">任务对照</a>
+    <a href="#p0">P0 结论</a>
+    <a href="#traps">关键修正</a>
+    <a href="#toolchain">工具链</a>
+    <a href="#aip">AIP / AIRAC</a>
+    <a href="#building">建筑资料</a>
+    <a href="#coverage">覆盖方案</a>
+    <a href="#pending">未完成</a>
+    <a href="#confirm">需确认</a>
+    <a href="#files">交付文件</a>
+    <a href="#boundary">边界声明</a>
+  </nav>
+</header>
+
+<main>
+
+<section id="overview">
+  <h2><span class="n">01</span>阶段概览</h2>
+  <p>本阶段目标：在不进入正式建模的前提下，完成 ZPMS 机场真实资料收集、数据交叉核验、建筑参考资料整理和开发工具链准备，最终形成《德宏芒市国际机场数据基准 v1》。</p>
+  <div class="grid">
+    <div class="card"><div class="k">数据来源登记</div><div class="v ok">42 → 60 条</div><div class="small muted">第一阶段复核 + 第二阶段新增证据</div></div>
+    <div class="card"><div class="k">P0 核验任务</div><div class="v ok">10 份</div><div class="small muted">P0-01 ～ P0-10，均含验收规则与 eAIP 提取位置</div></div>
+    <div class="card"><div class="k">公开数据交叉核验</div><div class="v ok">46.7 KB 报告</div><div class="small muted">33 份证据 / 19.5 MB / SHA256 清单</div></div>
+    <div class="card"><div class="k">建筑资料</div><div class="v warn">7 类 / 照片 0 张</div><div class="small muted">7 份资料卡 + 总表 + 17 份 OSM GeoJSON</div></div>
+    <div class="card"><div class="k">SDK 工具链</div><div class="v ok">最小编译通过</div><div class="small muted">SDK 0.24.6 + Blender 4.5.17 + MSFS 插件</div></div>
+    <div class="card"><div class="k">数据基准</div><div class="v warn">v1.1（内部）</div><div class="small muted">P0 已闭环 2.5 项，其余待 eAIP</div></div>
+  </div>
+  <div class="callout">
+    <strong>阶段结论：</strong>第二阶段“资料库建立与核验”已按任务书完成约 85%，可提交验收；但尚不满足“数据基准冻结进入建模”的条件——P0 中 7 项必须由 eAIP 权威数据补齐。
+  </div>
+</section>
+
+<section id="tasks">
+  <h2><span class="n">02</span>任务书要求对照</h2>
+  <table>
+    <thead><tr><th>任务书要求</th><th>完成情况</th><th>状态</th></tr></thead>
+    <tbody>
+      <tr><td>检查第一阶段文件、保留原始记录、复核 42 条登记</td><td>第一阶段 4 份原始文件哈希未变；登记表逐条复核并扩至 60 条</td><td><span class="tag ok">完成</span></td></tr>
+      <tr><td>更新待核实清单</td><td>v2.0：P0 状态、已关闭项、其他缺口</td><td><span class="tag ok">完成</span></td></tr>
+      <tr><td>所有 P0 建立单独核验任务</td><td>P0-01 ～ P0-10 共 10 份任务书</td><td><span class="tag ok">完成</span></td></tr>
+      <tr><td>eAIP China 调查（AD 2.1/2.2/2.3/2.12/2.13/2.14/2.19/2.20/2.24）</td><td>站点/注册机制/公开资源已调查；登录后数据待用户注册；AD 2 提取表已建</td><td><span class="tag warn">部分完成</span></td></tr>
+      <tr><td>记录 AIRAC 生效日期与版本</td><td>AIRAC 2612（2026-11-26），AISC + FAA 双 S 源交叉确认</td><td><span class="tag ok">完成</span></td></tr>
+      <tr><td>建筑 7 类目录 + 每类 9 项字段</td><td>7 份资料卡 + 总表；合法可下载照片 0 张（网络阻断）</td><td><span class="tag warn">部分完成</span></td></tr>
+      <tr><td>工具链：SDK/Blender/插件/glTF/样例/Python</td><td>SDK 0.24.6 解包验证、Blender 4.5.17、插件安装、glTF 导出、BGL 编译测试通过</td><td><span class="tag ok">完成</span></td></tr>
+      <tr><td>下载记录 URL/大小/SHA256</td><td><code>99_临时下载\_downloads.txt</code> + 工具链报告 + 证据清单</td><td><span class="tag ok">完成</span></td></tr>
+      <tr><td>ZPLX/ZPMS 覆盖 A/B/C 方案</td><td>研究完成，推荐方案 A（主包 + 清理包），未实施</td><td><span class="tag ok">完成</span></td></tr>
+      <tr><td>数据基准 v1</td><td><code>10_德宏芒市国际机场数据基准_v1.md</code>（内部 v1.1）</td><td><span class="tag warn">完成待补</span></td></tr>
+      <tr><td>不进入建模、不装管理员软件、不动原版/Community/Blender</td><td>全部遵守（SDK 为 msiexec /a 解包，非系统安装）</td><td><span class="tag ok">遵守</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="p0">
+  <h2><span class="n">03</span>P0 数据结论（9 + 1 项）</h2>
+  <table>
+    <thead><tr><th>编号</th><th>数据项</th><th>结论</th><th>是否可进建模</th></tr></thead>
+    <tbody>
+      <tr><td>P0-01</td><td>跑道 05/23 入口坐标</td><td>仅 SkyVector 1 个 B 级来源；与 OSM 端点系统性偏差 181 / 208.6 m，字段语义不同</td><td><span class="tag bad">❌ 待 eAIP</span></td></tr>
+      <tr><td>P0-02</td><td>跑道 2600×45 m</td><td>长/宽已满足（CAACnews A + SkyVector/Airmate 双 B）；PCN/道面/道肩待核</td><td><span class="tag warn">🟡 长宽可用</span></td></tr>
+      <tr><td>P0-03</td><td>机场标高</td><td><strong>876.9 m（2877 ft）</strong>，双 B 一致 + 官网 876 m 佐证；881 m 判单源异常不采信</td><td><span class="tag ok">✅ 工作值可用</span></td></tr>
+      <tr><td>P0-04</td><td>ARP 基准点</td><td>三候选互差 205.7–378.8 m</td><td><span class="tag bad">❌ 待 eAIP</span></td></tr>
+      <tr><td>P0-05</td><td>磁差</td><td>约 1.0–1.1°W 模型值，无 AIP 实测</td><td><span class="tag bad">❌ 待 eAIP</span></td></tr>
+      <tr><td>P0-06</td><td>滑行道编号/几何</td><td>结构可信（3 竖联络 + 1 快脱离 + 平行滑行道）；编号缺失</td><td><span class="tag bad">❌ 待 eAIP</span></td></tr>
+      <tr><td>P0-07</td><td>停机位</td><td>2018 时点 25 个；2025—26 升级后 ≥25 未知；编号/位置/类型仅 D 级</td><td><span class="tag bad">❌ 待 eAIP</span></td></tr>
+      <tr><td>P0-08</td><td>23 号 ILS</td><td>仅百科“I 类”，频率/航向/进近灯无</td><td><span class="tag bad">❌ 待 eAIP</span></td></tr>
+      <tr><td>P0-09</td><td>跑道 PCN</td><td>仅维基单源 61/F/B/W/T</td><td><span class="tag bad">❌ 待 eAIP</span></td></tr>
+      <tr><td>P0-10</td><td>2025—26 升级后现势机位数</td><td>≥25，数量未知</td><td><span class="tag bad">❌ 待核实</span></td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">验收规则：≥1 个 S 级来源，或 ≥2 个相互独立且一致的 A/B 级来源；禁止取平均值 / 估算 / 推理补缺。</p>
+</section>
+
+<section id="traps">
+  <h2><span class="n">04</span>关键修正与数据陷阱</h2>
+  <div class="callout bad"><strong>陷阱 1（最易做错版本）：</strong>机场官网旧页「跑道 2200 m / 9 个机位 / 2 座廊桥 / 航站楼 13000 m²」是 <strong>2015 年前旧状态</strong>，不能用于建模。现势为跑道 05/23、2600×45 m；2018 年时点 25 个 C 类机位；2025—2026 旧机坪升级后“≥25 且数量未知”。</div>
+  <div class="callout warn"><strong>陷阱 2（坐标混用）：</strong>SkyVector 跑道坐标是“入口/threshold 点”，OSM 是跑道几何端点；两套基准偏差 181.0 / 208.6 m 且两端不等，<strong>禁止混用或拼接</strong>。</div>
+  <div class="callout warn"><strong>陷阱 3（机位数）：</strong>“25 个”是 2018-08 时点值；德宏州政府 2026-01 稿明确 2025—2026 年“旧机坪升级改造完成、停机位增加”，现势数量必须重新核实。</div>
+  <div class="callout"><strong>已澄清：</strong>“6.1 亿元改扩建”是 2016—2018 年跑道延长项目，不是 2020 年后新工程；T2 航站楼仅完成可研、<strong>未开工</strong>，不得当现役设施；原版 MSFS 2020 中该机场为旧 ICAO <strong>ZPLX</strong>（无 ZPMS）。</div>
+</section>
+
+<section id="toolchain">
+  <h2><span class="n">05</span>工具链成果</h2>
+  <table>
+    <thead><tr><th>项目</th><th>结果</th><th>证据</th></tr></thead>
+    <tbody>
+      <tr><td>MSFS SDK 0.24.6</td><td>官方 zip 113,306,986 B，SHA256 <code>6daaa1fa…f3f</code>；<code>msiexec /a</code> 解包到 J 盘，<code>version.txt = 0.24.6.0</code>（未系统安装）</td><td><span class="tag ok">已验证</span></td></tr>
+      <tr><td>Blender 4.5.17 LTS</td><td>便携版 398,351,060 B，SHA256 与官方 <code>.sha256</code> 一致；与 Steam Blender 5.2 并存，未卸载</td><td><span class="tag ok">已验证</span></td></tr>
+      <tr><td>MSFS Blender 插件</td><td><code>io_scene_gltf2_msfs_2020</code> 已装入 Blender 4.5，headless 启用 OK</td><td><span class="tag ok">已安装</span></td></tr>
+      <tr><td>glTF 导出</td><td>立方体 + 材质导出 GLTF_SEPARATE 成功（<code>cube_test.gltf</code> 1,260 B + bin 840 B）</td><td><span class="tag ok">通过</span></td></tr>
+      <tr><td>最小编译测试</td><td>fspackagetool 生成 <code>ZPMS_TEST.bgl</code>（565 B），<code>_FailedPackages.xml</code> 为空</td><td><span class="tag ok">通过</span></td></tr>
+      <tr><td>已知问题</td><td>机场 XML 含 <code>Start</code> / <code>Markings</code> 时 BGL asset group 失败；根因待第三阶段 Dev Mode 排查</td><td><span class="tag warn">待排查</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="aip">
+  <h2><span class="n">06</span>AIP / AIRAC 与核验路径</h2>
+  <ul>
+    <li><strong>AIRAC 版本：</strong>2612，生效 2026-11-26；下一周期 2613 生效 2026-12-24（AISC 官方进程表 + FAA NASR 双 S 源交叉确认）。</li>
+    <li><strong>eAIP China：</strong>官网公开文案明确“中国民航 AIP 可免费注册并通过本站查阅”；注册表单要求用户名/密码/邮箱 + <strong>组织名称/组织类型</strong>——需用户本人使用真实信息注册，<strong>不得编造组织</strong>。</li>
+    <li><strong>免费替代：</strong>中国民航通用航空信息服务平台（ga.aischina.com）个人注册无需审核，可查阅目视飞行航图（非 AIP AD 2，不能替代权威数据）。</li>
+    <li><strong>收费渠道：</strong>CAAC AIP 约 US$650/年、修订 US$500/年、CD 版 US$450（aischina.com 官方价格页）。</li>
+    <li><strong>AD 2 提取表：</strong>已按 2.1 / 2.2 / 2.3 / 2.12 / 2.13 / 2.14 / 2.19 / 2.20 / 2.24 建好，等注册后填写；航图仅内部核验，禁止嵌入插件或再分发。</li>
+  </ul>
+</section>
+
+<section id="building">
+  <h2><span class="n">07</span>建筑资料完成情况</h2>
+  <table>
+    <thead><tr><th>类别</th><th>完成度</th><th>关键状态</th></tr></thead>
+    <tbody>
+      <tr><td>T1 航站楼</td><td>约 70%</td><td>位置/OSM 轮廓已确认；面积/高度/屋顶/廊桥数待核实</td></tr>
+      <tr><td>航管楼与塔台</td><td>约 35%</td><td>2018 新建、原航站楼北侧；无高度/轮廓/照片</td></tr>
+      <tr><td>登机廊桥</td><td>约 30%</td><td>数量三说（2 / 3 / 4）；无位置几何</td></tr>
+      <tr><td>机库及维修设施</td><td>约 10%</td><td><strong>未确认</strong>（公开资料与 OSM 均无）；未虚构</td></tr>
+      <tr><td>消防救援设施</td><td>约 30%</td><td>2018 项目含新建消防站；位置/等级待核</td></tr>
+      <tr><td>停车场及机场道路</td><td>约 65%</td><td>OSM 12 块停车场 30,038.4 m²；车位数未知</td></tr>
+      <tr><td>周边地形与植被</td><td>约 60%</td><td>OSM 5 km 土地利用已采集；标高冲突待 AIP</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><strong>照片缺口：</strong>本阶段合法可下载建筑照片 <strong>0 张</strong>（Wikimedia / Commons 网络被阻断）；仅登记 6 条“仅参考”URL，均不得作为纹理。纹理须自制或后续实地拍摄。</div>
+</section>
+
+<section id="coverage">
+  <h2><span class="n">08</span>ZPLX / ZPMS 双代码覆盖方案</h2>
+  <p><strong>核心结论：</strong><code>DeleteAirport</code> 不能删除“不同 ICAO”的机场；只能同码覆盖 + <code>DeleteAirport</code> + <code>closed="TRUE"</code> 清理旧码。推荐<strong>方案 A</strong>：</p>
+  <table>
+    <thead><tr><th>方案</th><th>做法</th><th>评价</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag ok">A（推荐）</span></td><td>ZPMS 主包 + 独立 ZPLX 清理覆盖包（同码 + DeleteAirport 全删 + closed）</td><td>满足 ZPMS 身份；需实测 navdata 加载顺序风险</td></tr>
+      <tr><td><span class="tag warn">B</span></td><td>只建 ZPMS，接受同位置双机场</td><td>世界地图/ATC/AI 混乱，不推荐</td></tr>
+      <tr><td><span class="tag bad">C</span></td><td>沿用 ZPLX 代码做增强</td><td>不满足项目 ZPMS 身份，不采用</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">最大风险：Navigraph / 第三方 navdata 与包加载顺序可能导致 ZPMS 双跑道或 ILS 失效；ZPLX 记录无法彻底移除。以上均需第三阶段进游戏实测。</p>
+</section>
+
+<section id="pending">
+  <h2><span class="n">09</span>未完成事项（不阻塞验收，阻塞建模）</h2>
+  <table>
+    <thead><tr><th>#</th><th>事项</th><th>需要谁</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>eAIP 注册 + AD 2 数据抄录</td><td>用户</td><td>补 P0-01/04/05/06/07/08/09/10、PCN、道面</td></tr>
+      <tr><td>2</td><td>Start / Markings 编译失败根因</td><td>第三阶段 Dev Mode</td><td>正式建场必须使用跑道入口与标线</td></tr>
+      <tr><td>3</td><td>建筑照片、塔台/机库/消防资料</td><td>用户 / 网络 / 实拍</td><td>决定纹理与建筑体量</td></tr>
+      <tr><td>4</td><td>ZPLX 清理包实测</td><td>第三阶段</td><td>验证世界地图/ATC/AI 表现</td></tr>
+      <tr><td>5</td><td>SDK 正式系统安装（可选）</td><td>用户</td><td>当前解包方式已能编译；若 Dev Mode 识别异常再安装</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="confirm">
+  <h2><span class="n">10</span>需要用户确认 / 操作</h2>
+  <ul>
+    <li>是否同意按《AIP 版本及核验记录》2.1 节完成 <strong>eAIP China 注册</strong>（需本人真实信息，不得编造组织），之后补 P0 出数据基准 v1.2；</li>
+    <li>若 eAIP 注册不便，是否接受“公开数据临时基准 + 第四阶段前用 AIP 校准”；</li>
+    <li>建筑照片：提供 Wikimedia 可用网络下的下载步骤，还是改为实拍 / 向机场申请资料；</li>
+    <li>第三阶段是否按计划开始：进 MSFS 实测 ZPLX/ZPMS、验证清理包、排查 Start/Markings 编译问题。</li>
+  </ul>
+</section>
+
+<section id="files">
+  <h2><span class="n">11</span>交付文件索引</h2>
+  <table class="files">
+    <thead><tr><th>文件</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td><a href="10_德宏芒市国际机场数据基准_v1.md">10_德宏芒市国际机场数据基准_v1.md</a></td><td>数据基准 v1（内部 v1.1）</td></tr>
+      <tr><td><a href="11_第二阶段总结报告.md">11_第二阶段总结报告.md</a></td><td>本总结的 Markdown 源版</td></tr>
+      <tr><td><a href="04_数据来源与可信度登记表.csv">04_数据来源与可信度登记表.csv</a></td><td>60 条来源登记（Excel 可打开）</td></tr>
+      <tr><td><a href="05_待核实清单.md">05_待核实清单.md</a></td><td>待核实清单 v2.0</td></tr>
+      <tr><td><a href="P0核验任务/">P0核验任务/</a></td><td>P0-01 ～ P0-10 任务书</td></tr>
+      <tr><td><a href="07_ZPLX_ZPMS机场覆盖方案比较.md">07_ZPLX_ZPMS机场覆盖方案比较.md</a></td><td>覆盖方案 A/B/C 与验证清单</td></tr>
+      <tr><td><a href="09_SDK工具链准备报告.md">09_SDK工具链准备报告.md</a></td><td>SDK/Blender/编译测试证据</td></tr>
+      <tr><td><a href="../01_机场资料库/01_官方AIP/AIP版本及核验记录.md">01_机场资料库/01_官方AIP/AIP版本及核验记录.md</a></td><td>AIRAC 2612 + AD 2 提取表</td></tr>
+      <tr><td><a href="../01_机场资料库/_来源记录/02_P0公开数据交叉核验.md">01_机场资料库/_来源记录/02_P0公开数据交叉核验.md</a></td><td>P0 公开数据交叉核验报告</td></tr>
+      <tr><td><a href="../01_机场资料库/03_建筑照片/_建筑资料总表.md">01_机场资料库/03_建筑照片/_建筑资料总表.md</a></td><td>7 类建筑资料总表</td></tr>
+      <tr><td><a href="../本次工作说明_20261126_第二阶段.txt">本次工作说明_20261126_第二阶段.txt</a></td><td>第二阶段修改说明（TXT）</td></tr>
+      <tr><td><a href="12_第二阶段交付证据清单_SHA256.txt">12_第二阶段交付证据清单_SHA256.txt</a></td><td>交付证据 SHA256 清单</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">以上链接为相对路径（本 HTML 位于 00_项目管理 目录），在浏览器中打开即可跳转。</p>
+</section>
+
+<section id="boundary">
+  <h2><span class="n">12</span>边界与合规声明</h2>
+  <ul>
+    <li>未修改 MSFS 原版文件；未删除 Community 插件；未卸载现有 Blender 5.2；</li>
+    <li>未安装任何需要管理员权限的软件（SDK 为 <code>msiexec /a</code> 解包，非系统安装）；</li>
+    <li>未购买航图/素材；未使用第三方机场模型；未把 AIP/航图/影像截图放入插件；</li>
+    <li>未进入正式建模；未登录 eAIP、未下载受保护航图。</li>
+  </ul>
+  <div class="callout"><strong>下一步：</strong>待用户验收 → 完成 eAIP 注册并补 P0 → 数据基准 v1.2 → 第三阶段（原版机场分析 / 进游戏实测 / 覆盖方案验证 / 编译问题排查）。</div>
+</section>
+
+</main>
+
+<footer>
+  Motu Game Tech · Motu Scenery – ZPMS Dehong Mangshi International Airport（MSFS 2020）<br>
+  第二阶段总结报告 · HTML 版 v1.0 · 生成于 2026-11-26 21:40（Asia/Shanghai）· 执行：DeepSeek Harness<br>
+  数据基线 AIRAC 2612 · 本报告仅供项目内部使用
+</footer>
+
+</div>
+</body>
+</html>
